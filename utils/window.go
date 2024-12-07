@@ -25,7 +25,7 @@ func SetTransparent(hwnd win.HWND) {
 	procSetLayeredWindowAttributes.Call(uintptr(hwnd), 0, 0xFF, LWA_COLORKEY|LWA_ALPHA)
 }
 
-func DrawCrosshair(hwnd win.HWND) {
+func DrawCrosshair(hwnd win.HWND, color win.COLORREF) {
 	// Get device context
 	hdc := win.GetDC(hwnd)
 	defer win.ReleaseDC(hwnd, hdc)
@@ -38,7 +38,7 @@ func DrawCrosshair(hwnd win.HWND) {
 
 	logBrush := win.LOGBRUSH{
 		LbStyle: win.BS_SOLID,
-		LbColor: win.COLORREF(0xFF00FF),
+		LbColor: color,
 	}
 
 	pen := win.ExtCreatePen(win.PS_GEOMETRIC|win.PS_SOLID, 2, &logBrush, 0, nil)

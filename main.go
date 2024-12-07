@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"crossair/utils"
+	"fmt"
+	"os"
 	"syscall"
 	"unsafe"
 
@@ -12,12 +15,19 @@ func main() {
 	hInstance := win.GetModuleHandle(nil)
 	className := syscall.StringToUTF16Ptr("OverlayWindow")
 
+	fmt.Println("Enter a color for the crosshair (blue, red, pink ..): ")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	scannerText := scanner.Text()
+
+	color := utils.GetColor(scannerText)
+
 	wc := win.WNDCLASSEX{
 		CbSize: uint32(unsafe.Sizeof(win.WNDCLASSEX{})),
 		LpfnWndProc: syscall.NewCallback(func(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 			switch msg {
 			case win.WM_PAINT:
-				utils.DrawCrosshair(hwnd)
+				utils.DrawCrosshair(hwnd, color)
 				utils.ValidateRect(hwnd, nil)
 				return 0
 			case win.WM_DESTROY:
